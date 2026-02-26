@@ -56,6 +56,9 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer base {
@@ -64,5 +67,15 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
