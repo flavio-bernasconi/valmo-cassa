@@ -105,12 +105,17 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
   };
 
   useEffect(() => {
-    const checkAreAllTakeout = Object.values(itemOptions || {}).every(
-      (item) => item.isTakeout,
-    );
-    const checkAreAllPrintSeparateTickets = Object.values(
-      itemOptions || {},
-    ).every((item) => item.printSeparateTickets);
+    const checkAreAllTakeout =
+      Object.keys(itemOptions || {}).length > 0 &&
+      Object.keys(itemOptions || {}).length === cart.length &&
+      Object.values(itemOptions || {}).every((item) => item.isTakeout);
+
+    const checkAreAllPrintSeparateTickets =
+      Object.keys(itemOptions || {}).length > 0 &&
+      Object.keys(itemOptions || {}).length === cart.length &&
+      Object.values(itemOptions || {}).every(
+        (item) => item.printSeparateTickets,
+      );
 
     if (checkAreAllTakeout) {
       setIsAllOrderTakeout(true);
@@ -167,7 +172,9 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
               setItemOptions(newOptions);
             }}
           />
-          <Label htmlFor="print">Stampa tickets separati</Label>
+          <Label htmlFor="print">
+            Stampa <strong>tutti</strong> tickets separati
+          </Label>
         </div>
         <div className="flex items-center gap-2">
           <Checkbox
@@ -195,7 +202,9 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
               setItemOptions(newOptions);
             }}
           />
-          <Label htmlFor="isTakeout">Asporto</Label>
+          <Label htmlFor="isTakeout">
+            Asporto <strong>tutto</strong> l&apos;ordine
+          </Label>
         </div>
         <Button
           className="w-full mt-4 text-xl py-8"
