@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import Link from "next/link";
 import "./globals.css";
 import { Toaster } from "sonner";
 
@@ -10,8 +11,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Valmo Cassa - Offline First",
+  description: "Sistema di gestione cassa locale per Valmo Festival",
 };
 
 const geistSans = Geist({
@@ -34,6 +35,30 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <header className="border-b bg-white/50 backdrop-blur-md sticky top-0 z-50">
+            <div className=" mx-auto px-8 h-16 flex items-center justify-between">
+              <Link
+                href="/"
+                className="font-bold text-xl tracking-tight text-primary"
+              >
+                Valmo Cassa
+              </Link>
+              <nav className="flex items-center gap-6">
+                <Link
+                  href="/"
+                  className="text-sm font-medium hover:text-primary transition-colors"
+                >
+                  Cassa
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium hover:text-primary transition-colors"
+                >
+                  Dashboard
+                </Link>
+              </nav>
+            </div>
+          </header>
           {children}
         </ThemeProvider>
         <Toaster position="top-right" richColors />

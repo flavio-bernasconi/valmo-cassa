@@ -1,23 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MenuItem } from "@/app/protected/page";
+import { MenuItem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { CartItemAction, createOrder } from "@/app/protected/actions";
 import { toast } from "sonner";
 import { MenuList } from "./menu/MenuList";
 import { Cart } from "./order/Cart";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
+import { db, seedDatabase } from "@/lib/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export type CartItem = {
   item: MenuItem;
   quantity: number;
 };
 
-export function OrderInterface({ menu }: { menu: MenuItem[] }) {
+export function OrderInterface() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,35 +59,69 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
     0,
   );
 
+  const menu = useLiveQuery(() => db.menu_items.toArray()) || [];
+
+  useEffect(() => {
+    seedDatabase();
+  }, []);
+
   const handleSubmit = async () => {
     if (cart.length === 0) return;
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const cartForAction: CartItemAction[] = cart.map((i) => ({
-        menu_item_id: i.item.id,
+      // 1. Save order to Dexie
+      const orderId = await db.transaction(
+        "rw",
+        [db.orders, db.order_items],
+        async () => {
+          const id = await db.orders.add({
+            total_price: totalPrice,
+            created_at: new Date().toISOString(),
+          });
+
+          const orderItems = cart.map((i) => ({
+            order_id: id as string,
+            menu_item_id: i.item.id!,
+            quantity: i.quantity,
+            price_at_time: i.item.price,
+            is_takeout: itemOptions?.[i.item.id!]?.isTakeout || false,
+          }));
+
+          await db.order_items.bulkAdd(orderItems);
+          return id;
+        },
+      );
+
+      // 2. Call Print API
+      const printItems = cart.map((i) => ({
+        name: i.item.name,
         quantity: i.quantity,
-        price_at_time: i.item.price,
-        is_takeout: itemOptions?.[i.item.id]?.isTakeout || false,
-        print_separate_tickets:
-          itemOptions?.[i.item.id]?.printSeparateTickets || false,
+        price: i.item.price,
+        type: i.item.type,
+        isTakeout: itemOptions?.[i.item.id!]?.isTakeout || false,
+        printSeparateTickets:
+          itemOptions?.[i.item.id!]?.printSeparateTickets || false,
       }));
 
-      const result = await createOrder(
-        cartForAction,
-        totalPrice,
-        menu,
-        printAllTicketsSeparate,
-        isAllOrderTakeout,
-      );
-      if (!result.success) {
-        toast.error("Errore durante l'invio dell'ordine!", {
-          description: new Date().toLocaleString("it-IT"),
-        });
-        // setError(result?.message || "Errore durante l'invio dell'ordine.");
-        return;
-      }
+      const response = await fetch("/api/print", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: orderId.toString(),
+          items: printItems,
+          printAllTicketsSeparate,
+          isAllOrderTakeout,
+        }),
+      });
+
+      const result = await response.json();
+
+      // if (!result.success) {
+      //   throw new Error(result.message);
+      // }
+
       setCart([]);
       toast.success("Ordine inviato con successo!", {
         description: new Date().toLocaleString("it-IT"),
@@ -96,8 +131,16 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
       setError(
         err instanceof Error ? err.message : "Qualcosa è andato storto.",
       );
-      toast.error("Errore durante l'invio dell'ordine!", {
+      toast.error("Errore durante l&apos;invio dell&apos;ordine!", {
         description: new Date().toLocaleString("it-IT"),
+      });
+      // rollback remove last order if throw an error
+      await db.transaction("rw", [db.orders, db.order_items], async () => {
+        const lastOrder = await db.orders.toCollection().last();
+        if (lastOrder) {
+          await db.orders.delete(lastOrder.id!);
+          await db.order_items.where({ order_id: lastOrder.id! }).delete();
+        }
       });
     } finally {
       setIsSubmitting(false);
@@ -106,12 +149,12 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
 
   useEffect(() => {
     const checkAreAllTakeout =
-      Object.keys(itemOptions || {}).length > 0 &&
+      cart.length > 0 &&
       Object.keys(itemOptions || {}).length === cart.length &&
       Object.values(itemOptions || {}).every((item) => item.isTakeout);
 
     const checkAreAllPrintSeparateTickets =
-      Object.keys(itemOptions || {}).length > 0 &&
+      cart.length > 0 &&
       Object.keys(itemOptions || {}).length === cart.length &&
       Object.values(itemOptions || {}).every(
         (item) => item.printSeparateTickets,
@@ -127,7 +170,7 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
     } else {
       setPrintAllTicketsSeparate(false);
     }
-  }, [itemOptions]);
+  }, [itemOptions, cart.length]);
 
   return (
     <div className="flex gap-8 w-full">
@@ -156,8 +199,8 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
               setPrintAllTicketsSeparate(checked as boolean);
               const newOptions = cart.reduce(
                 (acc, item) => {
-                  acc[item.item.id] = {
-                    isTakeout: itemOptions?.[item.item.id]?.isTakeout || false,
+                  acc[item.item.id!] = {
+                    isTakeout: itemOptions?.[item.item.id!]?.isTakeout || false,
                     printSeparateTickets: (checked as boolean) || false,
                   };
                   return acc;
@@ -184,10 +227,10 @@ export function OrderInterface({ menu }: { menu: MenuItem[] }) {
               setIsAllOrderTakeout(checked as boolean);
               const newOptions = cart.reduce(
                 (acc, item) => {
-                  acc[item.item.id] = {
+                  acc[item.item.id!] = {
                     isTakeout: checked as boolean,
                     printSeparateTickets:
-                      itemOptions?.[item.item.id]?.printSeparateTickets ||
+                      itemOptions?.[item.item.id!]?.printSeparateTickets ||
                       false,
                   };
                   return acc;

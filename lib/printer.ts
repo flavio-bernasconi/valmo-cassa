@@ -1,4 +1,4 @@
-import { MenuItemTypes } from "@/app/protected/page";
+import { MenuItemTypes } from "@/lib/types";
 import {
   ThermalPrinter,
   PrinterTypes,

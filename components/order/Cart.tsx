@@ -2,7 +2,7 @@ import { MAPPED_TYPES } from "@/lib/constant";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { CartItem } from "../order-interface";
-import { MenuItem } from "@/app/protected/page";
+import { MenuItem } from "@/lib/types";
 import { OptionCartItem } from "./Options";
 
 const sortKeys = Object.keys(MAPPED_TYPES);
@@ -39,7 +39,7 @@ export const Cart = ({
   );
 
   return (
-    <div className="flex flex-col min-w-[35vw] gap-4 sticky top-4 h-fit border p-6 rounded-xl bg-white">
+    <div className="flex flex-col min-w-[35vw] gap-4 sticky top-24 h-fit border p-6 rounded-xl bg-white">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-light">Il Tuo Ordine</h3>
@@ -47,9 +47,11 @@ export const Cart = ({
             €{totalPrice.toFixed(2)}
           </span>
         </div>
-        <Button variant="outline" onClick={clearCart} size="sm">
-          <Trash2 className="w-5 h-5" /> Cancella ordine
-        </Button>
+        {cart.length > 0 && (
+          <Button variant="outline" onClick={clearCart} size="sm">
+            <Trash2 className="w-5 h-5" /> Cancella ordine
+          </Button>
+        )}
       </div>
 
       {cart.length === 0 ? (
@@ -84,22 +86,22 @@ export const Cart = ({
                     </span>
                   </div>
                   <OptionCartItem
-                    itemOptions={itemOptions?.[i.item.id]}
+                    itemOptions={itemOptions?.[i.item.id!]}
                     setItemOptions={(value) => {
                       setItemOptions?.((prev) => {
                         const next =
                           typeof value === "function"
-                            ? value(prev?.[i.item.id])
+                            ? value(prev?.[i.item.id!])
                             : value;
                         if (!next) {
                           if (!prev) return undefined;
                           const nextOptions = { ...prev };
-                          delete nextOptions[i.item.id];
+                          delete nextOptions[i.item.id!];
                           return Object.keys(nextOptions).length > 0
                             ? nextOptions
                             : undefined;
                         }
-                        return { ...prev, [i.item.id]: next };
+                        return { ...prev, [i.item.id!]: next };
                       });
                     }}
                   />
@@ -108,7 +110,7 @@ export const Cart = ({
                       variant="outline"
                       size="icon"
                       className="h-7 w-7"
-                      onClick={() => removeFromCart(i.item.id)}
+                      onClick={() => removeFromCart(i.item.id!)}
                     >
                       <Minus className="w-3 h-3" />
                     </Button>
