@@ -54,6 +54,15 @@ export function OrderInterface() {
     });
   };
 
+  const updateQuantity = (itemId: string, quantity: number) => {
+    setCart((prev) => {
+      if (quantity <= 0) {
+        return prev.filter((i) => i.item.id !== itemId);
+      }
+      return prev.map((i) => (i.item.id === itemId ? { ...i, quantity } : i));
+    });
+  };
+
   const totalPrice = cart.reduce(
     (acc, val) => acc + val.item.price * val.quantity,
     0,
@@ -180,6 +189,7 @@ export function OrderInterface() {
         cart={cart}
         removeFromCart={removeFromCart}
         addToCart={addToCart}
+        updateQuantity={updateQuantity}
         clearCart={() => {
           setCart([]);
         }}

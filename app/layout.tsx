@@ -4,6 +4,8 @@ import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { StorageStatus } from "@/components/StorageStatus";
+import { ExportData } from "@/components/ExportData";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -37,12 +39,14 @@ export default function RootLayout({
         >
           <header className="border-b bg-white/50 backdrop-blur-md sticky top-0 z-50">
             <div className=" mx-auto px-8 h-16 flex items-center justify-between">
-              <Link
-                href="/"
-                className="font-bold text-xl tracking-tight text-primary"
-              >
-                Valmo Cassa
-              </Link>
+              <div className="flex items-center gap-6">
+                <Link
+                  href="/"
+                  className="font-bold text-xl tracking-tight text-primary whitespace-nowrap"
+                >
+                  Valmo Cassa
+                </Link>
+              </div>
               <nav className="flex items-center gap-6">
                 <Link
                   href="/"
@@ -57,6 +61,10 @@ export default function RootLayout({
                   Dashboard
                 </Link>
               </nav>
+              <div className="flex items-center gap-2">
+                <StorageStatus />
+                <ExportData />
+              </div>
             </div>
           </header>
           {children}

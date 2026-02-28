@@ -4,13 +4,11 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Calendar,
   TrendingUp,
   Package,
   History,
-  Download,
   Coffee,
   Utensils,
   Percent,
@@ -24,6 +22,7 @@ import {
 } from "@/components/ui/accordion";
 import { db } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { ExportData } from "@/components/ExportData";
 
 interface DashboardStats {
   productName: string;
@@ -169,35 +168,6 @@ export default function DashboardPage() {
     };
   }, [orders, orderItems, menuItems, startDate, endDate]);
 
-  const downloadData = async () => {
-    const allOrderItems = await db.order_items.toArray();
-    const allOrders = await db.orders.toArray();
-    const allMenu = await db.menu_items.toArray();
-
-    // Map items with names and dates for easier reading
-    const exportData = allOrderItems.map((oi) => {
-      const order = allOrders.find((o) => o.id === oi.order_id);
-      const menuItem = allMenu.find((mi) => mi.id === oi.menu_item_id);
-      return {
-        ...oi,
-        product_name: menuItem?.name || "Sconosciuto",
-        order_date: order?.created_at || "Sconosciuto",
-      };
-    });
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `order_items_export_${new Date().toISOString().split("T")[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex-1 w-full flex flex-col gap-8 p-8">
@@ -209,9 +179,7 @@ export default function DashboardPage() {
                 Monitora le vendite e i prodotti più popolari.
               </p>
             </div>
-            <Button variant="outline" onClick={downloadData} className="gap-2">
-              <Download className="w-4 h-4" /> Esporta JSON items
-            </Button>
+            <ExportData />
           </div>
         </div>
 
