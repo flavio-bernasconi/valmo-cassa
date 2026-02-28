@@ -23,6 +23,7 @@ import {
 import { db } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ExportData } from "@/components/ExportData";
+import { ProductStatsTable } from "@/components/dashboard/ProductStatsTable";
 
 interface DashboardStats {
   productName: string;
@@ -254,9 +255,9 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-blue-900">
-                {takeoutStats.percentage.toFixed(1)}%{" "}
+                {takeoutStats.qty} pz.{" "}
                 <span className="text-lg font-normal">
-                  ({takeoutStats.qty} pz.)
+                  {takeoutStats.percentage.toFixed(1)}%
                 </span>
               </div>
               <p className="text-xs text-blue-600 mt-1">
@@ -299,9 +300,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+        <ProductStatsTable stats={stats} />
 
         {/* Details Table */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Dettaglio Prodotti</CardTitle>
           </CardHeader>
@@ -344,7 +346,7 @@ export default function DashboardPage() {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Recent Orders History */}
         <div className="flex flex-col gap-4">
@@ -382,7 +384,7 @@ export default function DashboardPage() {
                       {order.items.map((item, idx) => (
                         <div
                           key={idx}
-                          className="flex justify-between text-sm py-1 border-b last:border-0"
+                          className="flex justify-between text-sm py-1 border-b last:border-0 hover:bg-slate-100"
                         >
                           <span>
                             {item.quantity}x {item.name}
