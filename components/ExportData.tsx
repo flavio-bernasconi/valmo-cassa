@@ -32,7 +32,9 @@ export function ExportData({
       // Map items with names and dates for easier reading
       const exportData = allOrderItems.map((oi) => {
         const order = allOrders.find((o) => o.id === oi.order_id);
-        const menuItem = allMenu.find((mi) => mi.id === oi.menu_item_id);
+        const menuItem = allMenu.find(
+          (mi) => String(mi.id) === String(oi.menu_item_id),
+        );
         return {
           ...oi,
           product_name: menuItem?.name || "Sconosciuto",
@@ -47,16 +49,8 @@ export function ExportData({
       const a = document.createElement("a");
       a.href = url;
       const now = new Date();
-      const formatDate = new Intl.DateTimeFormat("it-IT", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-        .format(now)
-        .split(" ")
-        .join("_");
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const formatDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}`;
       a.download = `order_items_export_${formatDate}.json`;
       document.body.appendChild(a);
       a.click();

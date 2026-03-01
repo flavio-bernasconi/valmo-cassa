@@ -5,12 +5,7 @@ import { ChevronUp, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface DashboardStats {
-  productName: string;
-  totalQuantity: number;
-  totalRevenue: number;
-}
+import type { DashboardStats } from "@/lib/dashboard";
 
 interface ProductStatsTableProps {
   stats: DashboardStats[];

@@ -10,8 +10,9 @@ import { MenuList } from "./menu/MenuList";
 import { Cart } from "./order/Cart";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
-import { db, seedDatabase } from "@/lib/db";
+import { db, deleteOrder, seedDatabase } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { ConfirmationModal } from "./ConfirmationModal";
 
 export type CartItem = {
   item: MenuItem;
@@ -29,6 +30,7 @@ export function OrderInterface() {
     | { [key: string]: { isTakeout: boolean; printSeparateTickets: boolean } }
     | undefined
   >();
+  const [showPrintConfirm, setShowPrintConfirm] = useState(false);
 
   const addToCart = (item: MenuItem) => {
     setCart((prev) => {
@@ -74,62 +76,82 @@ export function OrderInterface() {
     seedDatabase();
   }, []);
 
-  const handleSubmit = async () => {
+  const getPrintPayload = () =>
+    cart.map((i) => ({
+      name: i.item.name,
+      quantity: i.quantity,
+      price: i.item.price,
+      type: i.item.type,
+      isTakeout: itemOptions?.[i.item.id!]?.isTakeout || false,
+      printSeparateTickets:
+        itemOptions?.[i.item.id!]?.printSeparateTickets || false,
+    }));
+
+  const handlePrintOnly = async () => {
     if (cart.length === 0) return;
     setIsSubmitting(true);
     setError(null);
-
     try {
-      // 1. Save order to Dexie
-      const orderId = await db.transaction(
-        "rw",
-        [db.orders, db.order_items],
-        async () => {
-          const id = await db.orders.add({
-            total_price: totalPrice,
-            created_at: new Date().toISOString(),
-          });
-
-          const orderItems = cart.map((i) => ({
-            order_id: id as string,
-            menu_item_id: i.item.id!,
-            quantity: i.quantity,
-            price_at_time: i.item.price,
-            is_takeout: itemOptions?.[i.item.id!]?.isTakeout || false,
-          }));
-
-          await db.order_items.bulkAdd(orderItems);
-          return id;
-        },
-      );
-
-      // 2. Call Print API
-      const printItems = cart.map((i) => ({
-        name: i.item.name,
-        quantity: i.quantity,
-        price: i.item.price,
-        type: i.item.type,
-        isTakeout: itemOptions?.[i.item.id!]?.isTakeout || false,
-        printSeparateTickets:
-          itemOptions?.[i.item.id!]?.printSeparateTickets || false,
-      }));
-
-      const response = await fetch("/api/print", {
+      await fetch("/api/print", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderId: orderId.toString(),
-          items: printItems,
+          orderId: `print-only-${crypto.randomUUID()}`,
+          items: getPrintPayload(),
           printAllTicketsSeparate,
           isAllOrderTakeout,
         }),
       });
+      toast.success("Stampa avviata!", {
+        description: "L'ordine non è stato salvato.",
+      });
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Errore durante la stampa.",
+      );
+      toast.error("Errore durante la stampa.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-      const result = await response.json();
+  const handleSubmit = async () => {
+    if (cart.length === 0) return;
+    setIsSubmitting(true);
+    setError(null);
+    const orderId = crypto.randomUUID();
 
-      // if (!result.success) {
-      //   throw new Error(result.message);
-      // }
+    try {
+      // 1. Save order to Dexie
+      await db.transaction("rw", [db.orders, db.order_items], async () => {
+        await db.orders.add({
+          id: orderId,
+          total_price: totalPrice,
+          created_at: new Date().toISOString(),
+        });
+
+        const orderItems = cart.map((i) => ({
+          order_id: orderId,
+          menu_item_id: String(i.item.id),
+          quantity: i.quantity,
+          price_at_time: i.item.price,
+          is_takeout: itemOptions?.[i.item.id!]?.isTakeout || false,
+        }));
+
+        await db.order_items.bulkAdd(orderItems);
+      });
+
+      // 2. Call Print API
+      await fetch("/api/print", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          items: getPrintPayload(),
+          printAllTicketsSeparate,
+          isAllOrderTakeout,
+        }),
+      });
 
       setCart([]);
       toast.success("Ordine inviato con successo!", {
@@ -140,17 +162,8 @@ export function OrderInterface() {
       setError(
         err instanceof Error ? err.message : "Qualcosa è andato storto.",
       );
-      toast.error("Errore durante l&apos;invio dell&apos;ordine!", {
-        description: new Date().toLocaleString("it-IT"),
-      });
-      // rollback remove last order if throw an error
-      await db.transaction("rw", [db.orders, db.order_items], async () => {
-        const lastOrder = await db.orders.toCollection().last();
-        if (lastOrder) {
-          await db.orders.delete(lastOrder.id!);
-          await db.order_items.where({ order_id: lastOrder.id! }).delete();
-        }
-      });
+      toast.error("Errore durante l&apos;invio dell&apos;ordine!");
+      await deleteOrder(orderId);
     } finally {
       setIsSubmitting(false);
     }
@@ -259,21 +272,48 @@ export function OrderInterface() {
             Asporto <strong>tutto</strong> l&apos;ordine
           </Label>
         </div>
-        <Button
-          className="w-full mt-4 text-xl py-8"
-          disabled={isSubmitting}
-          onClick={handleSubmit}
-          size="lg"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Invio in corso...
-            </>
-          ) : (
-            "Conferma Ordine"
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            className="mt-4 shrink-0"
+            disabled={isSubmitting || cart.length === 0}
+            onClick={() => setShowPrintConfirm(true)}
+            size="sm"
+            variant="outline"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ...
+              </>
+            ) : (
+              "Stampa senza salvare"
+            )}
+          </Button>
+          <ConfirmationModal
+            open={showPrintConfirm}
+            onOpenChange={setShowPrintConfirm}
+            title="Stampa senza salvare"
+            description="Stamperai i ticket senza registrare l'ordine nel sistema. Vuoi continuare?"
+            confirmLabel="Stampa"
+            cancelLabel="Annulla"
+            onConfirm={handlePrintOnly}
+          />
+          <Button
+            className="w-full mt-4 text-xl py-8"
+            disabled={isSubmitting}
+            onClick={handleSubmit}
+            size="lg"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Invio in corso...
+              </>
+            ) : (
+              "Conferma Ordine"
+            )}
+          </Button>
+        </div>
       </Cart>
     </div>
   );

@@ -10,8 +10,9 @@ export class MyDatabase extends Dexie {
     super("ValmoCassaDB");
     this.version(1).stores({
       menu_items: "++id, name, type",
-      orders: "++id, created_at",
-      order_items: "++id, order_id, menu_item_id",
+      orders: "id, created_at",
+      order_items:
+        "++id, order_id, [order_id+menu_item_id], menu_item_id",
     });
   }
 }
@@ -126,3 +127,27 @@ export async function seedDatabase() {
     initialMenu.map((item) => ({ ...item, created_at: now })) as MenuItem[],
   );
 }
+
+export async function addMenuItem(item: {
+  name: string;
+  price: number;
+  type: MenuItemTypes;
+}): Promise<number> {
+  const now = new Date().toISOString();
+  return await db.menu_items.add({
+    ...item,
+    created_at: now,
+  } as MenuItem);
+}
+
+export async function deleteMenuItem(id: number): Promise<void> {
+  await db.menu_items.delete(id);
+}
+
+export async function deleteOrder(id: string): Promise<void> {
+  await db.transaction("rw", [db.orders, db.order_items], async () => {
+    await db.orders.delete(id);
+    await db.order_items.where("order_id").equals(id).delete();
+  });
+}
+

@@ -1,4 +1,4 @@
-import { MenuItemTypes } from "@/app/protected/page";
+import { MenuItemTypes } from "@/lib/types";
 
 export const MAPPED_TYPES: Record<MenuItemTypes, { color: string }> = {
   primi: { color: "#fff4c5" },
