@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { db } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { computeDashboardFromRows, type OrderRowInput } from "@/lib/dashboard";
 
 export default function DashboardPage() {
-  const today = new Date().toISOString().split("T")[0];
-  const [startDate, setStartDate] = useState(today);
-  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    setStartDate(today);
+    setEndDate(today);
+  }, []);
 
   // Use useLiveQuery to automatically refresh when DB changes
   const ordersLive = useLiveQuery(() => db.orders.toArray());
@@ -29,7 +34,7 @@ export default function DashboardPage() {
 
       return {
         orderId: order?.id ?? oi.order_id,
-        orderDate: order?.created_at ?? new Date().toISOString(),
+        orderDate: order?.created_at ?? "?????",
         productName: menuItem?.name || `Sconosciuto (${oi.menu_item_id})`,
         quantity: oi.quantity,
         priceAtTime: oi.price_at_time,

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Field } from "@/components/ui/field";
-import { ScissorsLineDashedIcon } from "lucide-react";
+import { ScissorsLineDashedIcon, ShoppingBagIcon } from "lucide-react";
 
 export function OptionCartItem({
   itemOptions,
@@ -37,17 +37,17 @@ export function OptionCartItem({
         <ToggleGroupItem
           value="takeout"
           aria-label="takeout"
-          className="flex mr-2 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
+          className="flex size-6 mr-2 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
         >
-          <span className="text-xs">Asporto</span>
+          <ShoppingBagIcon className="size-3" />
         </ToggleGroupItem>
         <ToggleGroupItem
           title="Stampa i biglietti separatamente"
           value="separate"
           aria-label="separate"
-          className="flex mr-2 size-8 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
+          className="flex size-6 mr-2 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
         >
-          <ScissorsLineDashedIcon className="size-4" />
+          <ScissorsLineDashedIcon className="size-3" />
         </ToggleGroupItem>
       </ToggleGroup>
     </Field>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -21,11 +21,17 @@ interface UploadedJsonRow {
 }
 
 export default function DashboardUploadPage() {
-  const today = new Date().toISOString().split("T")[0];
-  const [startDate, setStartDate] = useState<string>();
-  const [endDate, setEndDate] = useState<string>();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const [uploadedRows, setUploadedRows] = useState<UploadedJsonRow[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    setStartDate(today);
+    setEndDate(today);
+  }, []);
 
   const handleFilesChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -116,10 +122,10 @@ export default function DashboardUploadPage() {
     <DashboardLayout
       title="Dashboard da File JSON"
       subtitle="Carica uno o più file JSON di ordini per visualizzare le stesse statistiche della dashboard."
-      startDate={startDate || today}
-      endDate={endDate || today}
-      onStartDateChange={(value) => setStartDate(value || today)}
-      onEndDateChange={(value) => setEndDate(value || today)}
+      startDate={startDate}
+      endDate={endDate}
+      onStartDateChange={(value) => setStartDate(value)}
+      onEndDateChange={(value) => setEndDate(value)}
       stats={stats}
       totalRevenue={totalRevenue}
       totalItems={totalItems}

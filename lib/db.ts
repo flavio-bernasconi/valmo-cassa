@@ -11,8 +11,7 @@ export class MyDatabase extends Dexie {
     this.version(1).stores({
       menu_items: "++id, name, type",
       orders: "id, created_at",
-      order_items:
-        "++id, order_id, [order_id+menu_item_id], menu_item_id",
+      order_items: "++id, order_id, [order_id+menu_item_id], menu_item_id",
     });
   }
 }
@@ -25,9 +24,9 @@ export async function seedDatabase() {
   if (count > 0) return;
 
   const initialMenu: { name: string; price: number; type: MenuItemTypes }[] = [
-    { name: "Gadget", price: 2, type: "varie" as MenuItemTypes },
-    { name: "Maglietta GGV", price: 7, type: "varie" as MenuItemTypes },
-    { name: "3 Maglie GGV", price: 15, type: "varie" as MenuItemTypes },
+    // { name: "Gadget", price: 2, type: "varie" as MenuItemTypes },
+    // { name: "Maglietta GGV", price: 7, type: "varie" as MenuItemTypes },
+    // { name: "3 Maglie GGV", price: 15, type: "varie" as MenuItemTypes },
     { name: "Acqua", price: 0.5, type: "bar" as MenuItemTypes },
     { name: "Bibita", price: 2, type: "bar" as MenuItemTypes },
     { name: "Caffè", price: 1, type: "bar" as MenuItemTypes },
@@ -39,7 +38,7 @@ export async function seedDatabase() {
       type: "bar" as MenuItemTypes,
     },
     {
-      name: "Bottiglia vino bianco Bel Buche",
+      name: "Bottiglia vino",
       price: 10,
       type: "bar" as MenuItemTypes,
     },
@@ -47,12 +46,12 @@ export async function seedDatabase() {
     { name: "Birra Moretti", price: 2.5, type: "bar" as MenuItemTypes },
     { name: "Birra Ichnusa", price: 3, type: "bar" as MenuItemTypes },
     {
-      name: "Boccale birra artigianale",
+      name: "Birra artigianale",
       price: 10,
       type: "bar" as MenuItemTypes,
     },
-    { name: "Boccale birra Moretti", price: 8, type: "bar" as MenuItemTypes },
-    { name: "Boccale birra Ichnusa", price: 9, type: "bar" as MenuItemTypes },
+    { name: "Birra Moretti", price: 8, type: "bar" as MenuItemTypes },
+    { name: "Birra Ichnusa", price: 9, type: "bar" as MenuItemTypes },
     { name: "Gnocchi ragu", price: 4.5, type: "primi" as MenuItemTypes },
     { name: "Gnocchi boscaiola", price: 5, type: "primi" as MenuItemTypes },
     {
@@ -70,7 +69,7 @@ export async function seedDatabase() {
     { name: "Coda alla vaccinara", price: 8, type: "primi" as MenuItemTypes },
     { name: "Gorgonzola", price: 2, type: "primi" as MenuItemTypes },
     {
-      name: "Zuppa di cipolle con crostino",
+      name: "Zuppa cipolle",
       price: 4.5,
       type: "primi" as MenuItemTypes,
     },
@@ -79,32 +78,32 @@ export async function seedDatabase() {
     { name: "Costine", price: 6, type: "secondi" as MenuItemTypes },
     { name: "Tomino", price: 3, type: "contorni" as MenuItemTypes },
     {
-      name: "Tomino con verdure grigliate",
+      name: "Tomino + verdure grigliate",
       price: 4.5,
       type: "contorni" as MenuItemTypes,
     },
     {
-      name: "Panino con salamella",
+      name: "Salamella",
       price: 3,
       type: "secondi" as MenuItemTypes,
     },
     {
-      name: "Panino salamella + una verdura grigliata a scelta",
+      name: "Salamella + verdura",
       price: 4,
       type: "secondi" as MenuItemTypes,
     },
     {
-      name: "Panino salamella tomino + una verdura grigliata a scelta",
+      name: "Salamella tomino + verdura",
       price: 6.5,
       type: "secondi" as MenuItemTypes,
     },
     {
-      name: "Panino salamella tomino",
+      name: "Salamella tomino",
       price: 6,
       type: "secondi" as MenuItemTypes,
     },
     {
-      name: "Panino tomino + una verdura grigliata a scelta",
+      name: "Panino tomino + verdura",
       price: 4.5,
       type: "secondi" as MenuItemTypes,
     },
@@ -150,4 +149,3 @@ export async function deleteOrder(id: string): Promise<void> {
     await db.order_items.where("order_id").equals(id).delete();
   });
 }
-
