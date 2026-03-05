@@ -1,0 +1,242 @@
+[
+  {
+    "id": "1",
+    "name": "Acqua",
+    "price": 0.5,
+    "type": "bar"
+  },
+  {
+    "id": "2",
+    "name": "Bibita",
+    "price": 2,
+    "type": "bar"
+  },
+  {
+    "id": "3",
+    "name": "Caffè",
+    "price": 1,
+    "type": "bar"
+  },
+  {
+    "id": "4",
+    "name": "Vino 1 litro sfuso",
+    "price": 7,
+    "type": "bar"
+  },
+  {
+    "id": "5",
+    "name": "Vino bicchiere",
+    "price": 1,
+    "type": "bar"
+  },
+  {
+    "id": "6",
+    "name": "Bottiglia vino rosso Scariot",
+    "price": 12,
+    "type": "bar"
+  },
+  {
+    "id": "7",
+    "name": "Bottiglia vino",
+    "price": 10,
+    "type": "bar"
+  },
+  {
+    "id": "8",
+    "name": "Birra artigianale",
+    "price": 3.5,
+    "type": "bar"
+  },
+  {
+    "id": "9",
+    "name": "Birra Moretti",
+    "price": 2.5,
+    "type": "bar"
+  },
+  {
+    "id": "10",
+    "name": "Birra Ichnusa",
+    "price": 3,
+    "type": "bar"
+  },
+  {
+    "id": "11",
+    "name": "Birra artigianale premium",
+    "price": 10,
+    "type": "bar"
+  },
+  {
+    "id": "12",
+    "name": "Birra Moretti grande",
+    "price": 8,
+    "type": "bar"
+  },
+  {
+    "id": "13",
+    "name": "Birra Ichnusa grande",
+    "price": 9,
+    "type": "bar"
+  },
+  {
+    "id": "14",
+    "name": "Gnocchi ragu",
+    "price": 4.5,
+    "type": "primi"
+  },
+  {
+    "id": "15",
+    "name": "Gnocchi boscaiola",
+    "price": 5,
+    "type": "primi"
+  },
+  {
+    "id": "16",
+    "name": "Gnocchi burro e salvia",
+    "price": 4,
+    "type": "primi"
+  },
+  {
+    "id": "17",
+    "name": "Gnocchi pomodoro",
+    "price": 4,
+    "type": "primi"
+  },
+  {
+    "id": "18",
+    "name": "Gnocchi zola salsiccia",
+    "price": 5,
+    "type": "primi"
+  },
+  {
+    "id": "19",
+    "name": "Trippa",
+    "price": 4.5,
+    "type": "primi"
+  },
+  {
+    "id": "20",
+    "name": "Coda alla vaccinara",
+    "price": 8,
+    "type": "primi"
+  },
+  {
+    "id": "21",
+    "name": "Gorgonzola",
+    "price": 2,
+    "type": "primi"
+  },
+  {
+    "id": "22",
+    "name": "Zuppa cipolle",
+    "price": 4.5,
+    "type": "primi"
+  },
+  {
+    "id": "23",
+    "name": "Dolci",
+    "price": 2,
+    "type": "dolci"
+  },
+  {
+    "id": "24",
+    "name": "Grigliata mista",
+    "price": 9,
+    "type": "secondi"
+  },
+  {
+    "id": "25",
+    "name": "Costine",
+    "price": 6,
+    "type": "secondi"
+  },
+  {
+    "id": "26",
+    "name": "Tomino",
+    "price": 3,
+    "type": "contorni"
+  },
+  {
+    "id": "27",
+    "name": "Tomino + verdure grigliate",
+    "price": 4.5,
+    "type": "contorni"
+  },
+  {
+    "id": "28",
+    "name": "Salamella",
+    "price": 3,
+    "type": "secondi"
+  },
+  {
+    "id": "29",
+    "name": "Salamella + verdura",
+    "price": 4,
+    "type": "secondi"
+  },
+  {
+    "id": "30",
+    "name": "Salamella tomino + verdura",
+    "price": 6.5,
+    "type": "secondi"
+  },
+  {
+    "id": "31",
+    "name": "Salamella tomino",
+    "price": 6,
+    "type": "secondi"
+  },
+  {
+    "id": "32",
+    "name": "Panino tomino + verdura",
+    "price": 4.5,
+    "type": "secondi"
+  },
+  {
+    "id": "33",
+    "name": "Peperoni grigliati",
+    "price": 0,
+    "type": "contorni"
+  },
+  {
+    "id": "34",
+    "name": "Cipolle grigliate",
+    "price": 0,
+    "type": "contorni"
+  },
+  {
+    "id": "35",
+    "name": "Sovracosce di pollo",
+    "price": 5,
+    "type": "secondi"
+  },
+  {
+    "id": "36",
+    "name": "Roast beef",
+    "price": 4.5,
+    "type": "secondi"
+  },
+  {
+    "id": "37",
+    "name": "Patate fritte",
+    "price": 3,
+    "type": "contorni"
+  },
+  {
+    "id": "38",
+    "name": "Fagioli",
+    "price": 2,
+    "type": "contorni"
+  },
+  {
+    "id": "39",
+    "name": "Fagioli con cipolle",
+    "price": 2,
+    "type": "contorni"
+  },
+  {
+    "id": "40",
+    "name": "Fanta Insalata",
+    "price": 4,
+    "type": "contorni"
+  }
+]

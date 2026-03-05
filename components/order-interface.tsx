@@ -14,6 +14,9 @@ import { db, deleteOrder, seedDatabase } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { Change } from "./order/Change";
+import QRCode from "react-qr-code";
+import { CartQRCodec } from "@/lib/qr-codec";
+import { ScannerComponent } from "./scanner";
 
 export type CartItem = {
   item: MenuItem;
@@ -200,7 +203,7 @@ function OrderActionsBar({
       <div className="flex justify-between gap-6 py-3 px-8 rounded-lg bg-white border-2 border-b-gray-100">
         <div className="flex gap-2 flex-wrap">
           <Button
-            className="p-2"
+            className="py-6"
             disabled={isSubmitting || cart.length === 0}
             onClick={() => setShowSaveOnlyConfirm(true)}
             size="lg"
@@ -219,7 +222,7 @@ function OrderActionsBar({
             )}
           </Button>
           <Button
-            className=""
+            className="py-6"
             disabled={isSubmitting || cart.length === 0}
             onClick={() => setShowPrintConfirm(true)}
             size="lg"
@@ -242,6 +245,7 @@ function OrderActionsBar({
             onClick={() => {
               setCart([]);
             }}
+            disabled={isSubmitting || cart.length === 0}
             className="text-red-500 hover:text-red-600 hover:bg-red-50 "
           >
             <Trash2 className="w-3 h-3" /> Cancella
@@ -288,8 +292,8 @@ function OrderActionsBar({
                     acc[item.item.id!] = {
                       isTakeout: checked as boolean,
                       printSeparateTickets:
-                        itemOptions?.[item.item.id!]
-                          ?.printSeparateTickets || false,
+                        itemOptions?.[item.item.id!]?.printSeparateTickets ||
+                        false,
                     };
                     return acc;
                   },
@@ -385,20 +389,17 @@ export function OrderInterface() {
     seedDatabase();
   }, []);
 
-
   return (
     <div className="flex flex-col gap-8 w-full">
       <MenuList menu={menu} addToCart={addToCart} />
       {/* Cart Side */}
-      {cart.length > 0 && (
-        <OrderActionsBar
-          cart={cart}
-          totalPrice={totalPrice}
-          itemOptions={itemOptions}
-          setItemOptions={setItemOptions}
-          setCart={setCart}
-        />
-      )}
+      <OrderActionsBar
+        cart={cart}
+        totalPrice={totalPrice}
+        itemOptions={itemOptions}
+        setItemOptions={setItemOptions}
+        setCart={setCart}
+      />
       <Cart
         cart={cart}
         removeFromCart={removeFromCart}
@@ -407,6 +408,24 @@ export function OrderInterface() {
         itemOptions={itemOptions}
         setItemOptions={setItemOptions}
       ></Cart>
+      <div className="w-full flex flex-col gap-4 max-w-xs rounded-md overflow-hidden border border-slate-200">
+        <ScannerComponent menu={menu} setCart={setCart} />
+        <div
+          style={{
+            height: "auto",
+            margin: "0 auto",
+            maxWidth: 300,
+            width: "100%",
+          }}
+        >
+          <QRCode
+            size={256}
+            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+            value={cart.length > 0 ? CartQRCodec.encode(cart) : ""}
+            viewBox={`0 0 256 256`}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -35,11 +35,12 @@ export function OptionCartItem({
         spacing={3}
       >
         <ToggleGroupItem
+          title="Ordine d'asporto"
           value="takeout"
           aria-label="takeout"
           className="flex size-6 mr-2 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
         >
-          <ShoppingBagIcon className="size-3" />
+          <ShoppingBagIcon className="size-4" />
         </ToggleGroupItem>
         <ToggleGroupItem
           title="Stampa i biglietti separatamente"
@@ -47,7 +48,7 @@ export function OptionCartItem({
           aria-label="separate"
           className="flex size-6 mr-2 flex-col items-center justify-center rounded-sm data-[state=on]:bg-slate-700 data-[state=on]:text-white"
         >
-          <ScissorsLineDashedIcon className="size-3" />
+          <ScissorsLineDashedIcon className="size-4" />
         </ToggleGroupItem>
       </ToggleGroup>
     </Field>

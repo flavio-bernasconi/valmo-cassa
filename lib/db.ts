@@ -1,5 +1,6 @@
 import Dexie, { type Table } from "dexie";
 import { MenuItem, Order, OrderItem, MenuItemTypes } from "./types";
+import menuData from "../data/menu.json";
 
 export class MyDatabase extends Dexie {
   menu_items!: Table<MenuItem>;
@@ -23,107 +24,14 @@ export async function seedDatabase() {
   const count = await db.menu_items.count();
   if (count > 0) return;
 
-  const initialMenu: { name: string; price: number; type: MenuItemTypes }[] = [
-    // { name: "Gadget", price: 2, type: "varie" as MenuItemTypes },
-    // { name: "Maglietta GGV", price: 7, type: "varie" as MenuItemTypes },
-    // { name: "3 Maglie GGV", price: 15, type: "varie" as MenuItemTypes },
-    { name: "Acqua", price: 0.5, type: "bar" as MenuItemTypes },
-    { name: "Bibita", price: 2, type: "bar" as MenuItemTypes },
-    { name: "Caffè", price: 1, type: "bar" as MenuItemTypes },
-    { name: "Vino 1 litro sfuso", price: 7, type: "bar" as MenuItemTypes },
-    { name: "Vino bicchiere", price: 1, type: "bar" as MenuItemTypes },
-    {
-      name: "Bottiglia vino rosso Scariot",
-      price: 12,
-      type: "bar" as MenuItemTypes,
-    },
-    {
-      name: "Bottiglia vino",
-      price: 10,
-      type: "bar" as MenuItemTypes,
-    },
-    { name: "Birra artigianale", price: 3.5, type: "bar" as MenuItemTypes },
-    { name: "Birra Moretti", price: 2.5, type: "bar" as MenuItemTypes },
-    { name: "Birra Ichnusa", price: 3, type: "bar" as MenuItemTypes },
-    {
-      name: "Birra artigianale",
-      price: 10,
-      type: "bar" as MenuItemTypes,
-    },
-    { name: "Birra Moretti", price: 8, type: "bar" as MenuItemTypes },
-    { name: "Birra Ichnusa", price: 9, type: "bar" as MenuItemTypes },
-    { name: "Gnocchi ragu", price: 4.5, type: "primi" as MenuItemTypes },
-    { name: "Gnocchi boscaiola", price: 5, type: "primi" as MenuItemTypes },
-    {
-      name: "Gnocchi burro e salvia",
-      price: 4,
-      type: "primi" as MenuItemTypes,
-    },
-    { name: "Gnocchi pomodoro", price: 4, type: "primi" as MenuItemTypes },
-    {
-      name: "Gnocchi zola salsiccia",
-      price: 5,
-      type: "primi" as MenuItemTypes,
-    },
-    { name: "Trippa", price: 4.5, type: "primi" as MenuItemTypes },
-    { name: "Coda alla vaccinara", price: 8, type: "primi" as MenuItemTypes },
-    { name: "Gorgonzola", price: 2, type: "primi" as MenuItemTypes },
-    {
-      name: "Zuppa cipolle",
-      price: 4.5,
-      type: "primi" as MenuItemTypes,
-    },
-    { name: "Dolci", price: 2, type: "dolci" as MenuItemTypes },
-    { name: "Grigliata mista", price: 9, type: "secondi" as MenuItemTypes },
-    { name: "Costine", price: 6, type: "secondi" as MenuItemTypes },
-    { name: "Tomino", price: 3, type: "contorni" as MenuItemTypes },
-    {
-      name: "Tomino + verdure grigliate",
-      price: 4.5,
-      type: "contorni" as MenuItemTypes,
-    },
-    {
-      name: "Salamella",
-      price: 3,
-      type: "secondi" as MenuItemTypes,
-    },
-    {
-      name: "Salamella + verdura",
-      price: 4,
-      type: "secondi" as MenuItemTypes,
-    },
-    {
-      name: "Salamella tomino + verdura",
-      price: 6.5,
-      type: "secondi" as MenuItemTypes,
-    },
-    {
-      name: "Salamella tomino",
-      price: 6,
-      type: "secondi" as MenuItemTypes,
-    },
-    {
-      name: "Panino tomino + verdura",
-      price: 4.5,
-      type: "secondi" as MenuItemTypes,
-    },
-    { name: "Peperoni grigliati", price: 0, type: "contorni" as MenuItemTypes },
-    { name: "Cipolle grigliate", price: 0, type: "contorni" as MenuItemTypes },
-    { name: "Sovracosce di pollo", price: 5, type: "secondi" as MenuItemTypes },
-    { name: "Roast beef", price: 4.5, type: "secondi" as MenuItemTypes },
-    { name: "Patate fritte", price: 3, type: "contorni" as MenuItemTypes },
-    { name: "Fagioli", price: 2, type: "contorni" as MenuItemTypes },
-    {
-      name: "Fagioli con cipolle",
-      price: 2,
-      type: "contorni" as MenuItemTypes,
-    },
-    { name: "Fanta Insalata", price: 4, type: "contorni" as MenuItemTypes },
-  ];
-
   const now = new Date().toISOString();
   await db.menu_items.bulkAdd(
-    initialMenu.map((item) => ({ ...item, created_at: now })) as MenuItem[],
+    menuData.map((item) => ({
+      ...item,
+      id: item.id.toString(),
+      created_at: now,
+      visible: true,
+    })) as MenuItem[],
   );
 }
 
@@ -131,15 +39,19 @@ export async function addMenuItem(item: {
   name: string;
   price: number;
   type: MenuItemTypes;
-}): Promise<number> {
+}): Promise<string> {
+  const nextId = await getNextMenuId();
   const now = new Date().toISOString();
-  return await db.menu_items.add({
+  const id = await db.menu_items.add({
+    id: nextId.toString(),
     ...item,
     created_at: now,
+    visible: true,
   } as MenuItem);
+  return id.toString();
 }
 
-export async function deleteMenuItem(id: number): Promise<void> {
+export async function deleteMenuItem(id: string): Promise<void> {
   await db.menu_items.delete(id);
 }
 
@@ -148,4 +60,17 @@ export async function deleteOrder(id: string): Promise<void> {
     await db.orders.delete(id);
     await db.order_items.where("order_id").equals(id).delete();
   });
+}
+
+export async function toggleMenuItemVisibility(id: string): Promise<void> {
+  const item = await db.menu_items.get(id);
+  if (item) {
+    await db.menu_items.update(id, { visible: !item.visible });
+  }
+}
+
+export async function getNextMenuId(): Promise<number> {
+  const items = await db.menu_items.toArray();
+  const maxId = Math.max(...items.map(item => parseInt(item.id || '0')), 0);
+  return maxId + 1;
 }

@@ -7,11 +7,12 @@ export type MenuItemTypes =
   | "varie";
 
 export interface MenuItem {
-  id?: string;
+  id: string;
   name: string;
   price: number;
   type: MenuItemTypes;
   created_at: string;
+  visible?: boolean;
 }
 
 export interface Order {

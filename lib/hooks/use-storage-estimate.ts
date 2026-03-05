@@ -32,8 +32,6 @@ export function useStorageEstimate() {
         const usage = quota.usage || 0;
         const total = quota.quota || 0;
 
-        console.log({ usage, total });
-
         setEstimate({
           usage,
           quota: total,

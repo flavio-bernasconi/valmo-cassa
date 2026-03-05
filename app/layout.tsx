@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
@@ -62,6 +62,18 @@ export default function RootLayout({
                     className="text-sm font-medium hover:text-primary transition-colors"
                   >
                     Dashboard
+                  </Link>
+                  <Link
+                    href="/menu"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Menu
+                  </Link>
+                  <Link
+                    href="/dashboard/upload"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Upload
                   </Link>
                 </nav>
                 <div className="flex items-center gap-2">
