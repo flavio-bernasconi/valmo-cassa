@@ -8,3 +8,12 @@ export const MAPPED_TYPES: Record<MenuItemTypes, { color: string }> = {
   bar: { color: "#c5eaff" },
   varie: { color: "#fff" },
 };
+
+export const MENU_SORTING_KEY = [
+  "primi",
+  "secondi",
+  "contorni",
+  "dolci",
+  "bar",
+  "varie",
+];

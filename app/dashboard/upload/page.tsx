@@ -28,9 +28,14 @@ export default function DashboardUploadPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setStartDate(today);
-    setEndDate(today);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const todayStr = `${year}-${month}-${day}`;
+
+    setStartDate(`${todayStr}T00:00`);
+    setEndDate(`${todayStr}T23:59`);
   }, []);
 
   const handleFilesChange = async (
@@ -133,7 +138,7 @@ export default function DashboardUploadPage() {
       foodStats={foodStats}
       takeoutStats={takeoutStats}
       recentOrders={recentOrders}
-      hasDateFilter={false}
+      // hasDateFilter={false}
       headerActions={
         <div className="flex flex-col items-end gap-2">
           <Input

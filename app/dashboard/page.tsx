@@ -11,9 +11,14 @@ export default function DashboardPage() {
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setStartDate(today);
-    setEndDate(today);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const todayStr = `${year}-${month}-${day}`;
+
+    setStartDate(`${todayStr}T00:00`);
+    setEndDate(`${todayStr}T23:59`);
   }, []);
 
   // Use useLiveQuery to automatically refresh when DB changes

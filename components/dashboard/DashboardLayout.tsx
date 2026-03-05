@@ -96,7 +96,7 @@ export function DashboardLayout({
                   </Label>
                   <Input
                     id="start-date"
-                    type="date"
+                    type="datetime-local"
                     value={startDate}
                     onChange={(e) => onStartDateChange(e.target.value)}
                   />
@@ -107,11 +107,22 @@ export function DashboardLayout({
                   </Label>
                   <Input
                     id="end-date"
-                    type="date"
+                    type="datetime-local"
                     value={endDate}
                     onChange={(e) => onEndDateChange(e.target.value)}
                   />
                 </div>
+                <Button
+                  onClick={() => {
+                    onStartDateChange("");
+                    onEndDateChange("");
+                  }}
+                  className="ml-auto"
+                  size="sm"
+                  variant="destructive"
+                >
+                  Rimuovi filtro
+                </Button>
               </div>
             </CardContent>
           </Card>

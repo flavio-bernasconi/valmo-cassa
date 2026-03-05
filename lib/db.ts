@@ -35,20 +35,37 @@ export async function seedDatabase() {
   );
 }
 
+export async function generateUniqueId(): Promise<string> {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed easily confused chars like 0, 1, I, O
+  let isUnique = false;
+  let newId = "";
+
+  while (!isUnique) {
+    newId = "";
+    for (let i = 0; i < 4; i++) {
+      newId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const existing = await db.menu_items.get(newId);
+    if (!existing) isUnique = true;
+  }
+
+  return newId;
+}
+
 export async function addMenuItem(item: {
   name: string;
   price: number;
   type: MenuItemTypes;
 }): Promise<string> {
-  const nextId = await getNextMenuId();
+  const nextId = await generateUniqueId();
   const now = new Date().toISOString();
-  const id = await db.menu_items.add({
-    id: nextId.toString(),
+  await db.menu_items.add({
+    id: nextId,
     ...item,
     created_at: now,
     visible: true,
   } as MenuItem);
-  return id.toString();
+  return nextId;
 }
 
 export async function deleteMenuItem(id: string): Promise<void> {
@@ -67,10 +84,4 @@ export async function toggleMenuItemVisibility(id: string): Promise<void> {
   if (item) {
     await db.menu_items.update(id, { visible: !item.visible });
   }
-}
-
-export async function getNextMenuId(): Promise<number> {
-  const items = await db.menu_items.toArray();
-  const maxId = Math.max(...items.map(item => parseInt(item.id || '0')), 0);
-  return maxId + 1;
 }
