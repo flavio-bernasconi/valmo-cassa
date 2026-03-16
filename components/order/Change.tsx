@@ -21,9 +21,9 @@ export const Change = ({ totalPrice }: { totalPrice: string }) => {
       <div className="flex items-center justify-between gap-3 font-bold">
         <Input
           type="number"
-          placeholder="Importo"
+          placeholder="Importo cliente"
           onChange={(e) => setReceived(e.target.value)}
-          className="w-32 h-8"
+          className="w-36 h-8"
         />
         <span className="text-md font-medium whitespace-nowrap min-w-32">
           Resto: €{change}

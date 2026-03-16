@@ -2,7 +2,7 @@
 
 import { MenuItem } from "@/lib/types";
 import { MAPPED_TYPES, MENU_SORTING_KEY } from "@/lib/constant";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   DndContext,
   closestCenter,
@@ -19,7 +19,6 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import { useHotkey } from "@tanstack/react-hotkeys";
 
 interface SortableMenuItemProps {
   item: MenuItem;
@@ -50,18 +49,18 @@ function SortableMenuItem({ item, onClick }: SortableMenuItemProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative min-w-24 max-w-36 h-24 flex flex-col justify-between p-3 border rounded-md bg-card transition-shadow hover:shadow-md group text-left ${
+      className={`relative min-w-24 max-w-36 h-26 flex flex-col justify-between p-2 border rounded-md bg-card transition-shadow hover:shadow-md group text-left ${
         isDragging ? "shadow-xl ring-2 ring-primary/20" : ""
       }`}
     >
       <button
         onClick={() => onClick(item)}
-        className="flex-1 text-left flex flex-col justify-start gap-1"
+        className="flex-1 text-left flex flex-col justify-between gap-1"
       >
         <span className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
           {item.name}
         </span>
-        <span className="text-xs text-muted-foreground font-mono">
+        <span className="text-[10px] text-slate-700 font-mono">
           €{item.price.toFixed(2)}
         </span>
       </button>
@@ -70,7 +69,7 @@ function SortableMenuItem({ item, onClick }: SortableMenuItemProps) {
       <div
         {...attributes}
         {...listeners}
-        className="absolute bottom-1 right-1 p-1 cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 transition-colors"
+        className="absolute bottom-1 right-1 p-1 cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-600 transition-colors"
         title="Trascina per ordinare"
       >
         <GripVertical className="w-4 h-4" />
@@ -162,13 +161,8 @@ export const MenuList = ({
     }
   };
 
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  // This hotkey only fires when the panel (or its children) has focus
-  // useHotkey("Mod+S", () => console.log("heeeyoooooo"), { target: panelRef });
-
   return (
-    <div className="flex flex-col relative w-full" ref={panelRef} tabIndex={0}>
+    <div className="flex flex-col relative w-full" tabIndex={0}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

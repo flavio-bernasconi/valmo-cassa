@@ -17,7 +17,6 @@ import { Change } from "./order/Change";
 import QRCode from "react-qr-code";
 import { CartQRCodec } from "@/lib/qr-codec";
 import { ScannerComponent } from "./scanner";
-import { MENU_SORTING_KEY } from "@/lib/constant";
 
 export type CartItem = {
   item: MenuItem;
