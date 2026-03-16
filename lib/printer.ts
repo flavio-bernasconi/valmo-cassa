@@ -1,4 +1,4 @@
-import { MenuItemTypes } from "@/app/protected/page";
+import { MenuItemTypes } from "@/lib/types";
 import {
   ThermalPrinter,
   PrinterTypes,
@@ -38,15 +38,9 @@ export async function printOrderTicket(
   }
 
   printer.alignCenter();
-  printer.setTextDoubleHeight();
-  printer.setTextDoubleWidth();
+  printer.setTextSize(7,7)
+  printer.setTypeFontB();
   printer.println("ValmoFestival Tridi");
-  printer.setTextNormal();
-  printer.println("--------------------------------");
-  printer.alignLeft();
-  printer.println(`Ordine: ${orderId.substring(0, 8)}`);
-  printer.println(`Ora: ${new Date().toLocaleTimeString("it-IT")}`);
-  printer.println("--------------------------------");
   printer.newLine();
 
   // 1. Separate individual and groupable items
@@ -66,18 +60,17 @@ export async function printOrderTicket(
     const effectiveIsTakeout = isAllOrderTakeout || item.isTakeout;
     for (let i = 0; i < item.quantity; i++) {
       printer.alignCenter();
-      printer.setTextDoubleHeight();
+      printer.setTextSize(6,6)
       printer.println(item.type.toUpperCase());
       if (effectiveIsTakeout) {
-        printer.setTextDoubleWidth();
+        printer.setTextSize(4,4)
         printer.println("ASPORTO");
       }
       printer.setTextNormal();
       printer.println("--------------------------------");
       printer.alignLeft();
+      printer.setTextSize(5,5)
       printer.println(`1x ${item.name}`);
-      printer.alignRight();
-      printer.println(`${item.type}`);
       printer.println("--------------------------------");
       printer.newLine();
       printer.cut();
@@ -108,10 +101,10 @@ export async function printOrderTicket(
   // 4. Print grouped tickets
   Object.values(groups).forEach((group) => {
     printer.alignCenter();
-    printer.setTextDoubleHeight();
+    printer.setTextSize(6,6)
     printer.println(group.type.toUpperCase());
     if (group.isTakeout) {
-      printer.setTextDoubleWidth();
+      printer.setTextSize(4,4)
       printer.println("ASPORTO");
     }
     printer.setTextNormal();
@@ -119,9 +112,8 @@ export async function printOrderTicket(
 
     group.items.forEach((item) => {
       printer.alignLeft();
+      printer.setTextSize(5,5)
       printer.println(`${item.quantity}x ${item.name}`);
-      printer.alignRight();
-      printer.println(`${item.type}`);
     });
 
     printer.println("--------------------------------");

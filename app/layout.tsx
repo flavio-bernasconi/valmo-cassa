@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import Link from "next/link";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { StorageStatus } from "@/components/StorageStatus";
+import { ExportData } from "@/components/ExportData";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -10,8 +14,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Valmo Cassa - Offline First",
+  description: "Sistema di gestione cassa locale per Valmo Festival",
 };
 
 const geistSans = Geist({
@@ -30,11 +34,55 @@ export default function RootLayout({
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TooltipProvider>
+            {children}
+            <header className="border-b bg-white/50 backdrop-blur-md">
+              <div className=" mx-auto px-8 h-16 flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <Link
+                    href="/"
+                    className="font-bold text-xl tracking-tight text-primary whitespace-nowrap"
+                  >
+                    Valmo Cassa
+                  </Link>
+                </div>
+                <nav className="flex items-center gap-6">
+                  <Link
+                    href="/"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Cassa
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/menu"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Menu
+                  </Link>
+                  <Link
+                    href="/dashboard/upload"
+                    className="text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    Upload
+                  </Link>
+                </nav>
+                <div className="flex items-center gap-2">
+                  <StorageStatus />
+                  <ExportData />
+                </div>
+              </div>
+            </header>
+          </TooltipProvider>
         </ThemeProvider>
         <Toaster position="top-right" richColors />
       </body>
