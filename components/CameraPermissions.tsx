@@ -16,10 +16,13 @@ export default function WebcamPermission() {
       stream.getTracks().forEach((track) => track.stop());
     } catch (err: unknown) {
       console.error(err);
-      if (err.name === "NotAllowedError") {
+      if (err instanceof Error && err.name === "NotAllowedError") {
         setStatus("Permesso negato dall'utente. ❌");
       } else {
-        setStatus("Errore: " + err.message);
+        setStatus(
+          "Errore: " +
+            (err instanceof Error ? err.message : "Errore sconosciuto"),
+        );
       }
     }
   };

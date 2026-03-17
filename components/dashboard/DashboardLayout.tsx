@@ -42,7 +42,7 @@ interface DashboardLayoutProps {
   foodStats: { qty: number; rev: number };
   takeoutStats: { percentage: number; qty: number };
   recentOrders: RecentOrder[];
-  totalOrdersCount: number;
+  totalOrdersCount?: number;
   headerActions?: ReactNode;
   hasDateFilter?: boolean;
 }
