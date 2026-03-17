@@ -38,8 +38,7 @@ export async function printOrderTicket(
   }
 
   printer.alignCenter();
-  printer.setTextSize(7,7)
-  printer.setTypeFontB();
+  printer.setTextSize(6, 4);
   printer.println("ValmoFestival Tridi");
   printer.newLine();
 
@@ -60,17 +59,20 @@ export async function printOrderTicket(
     const effectiveIsTakeout = isAllOrderTakeout || item.isTakeout;
     for (let i = 0; i < item.quantity; i++) {
       printer.alignCenter();
-      printer.setTextSize(6,6)
+      printer.setTextSize(3, 3);
       printer.println(item.type.toUpperCase());
       if (effectiveIsTakeout) {
-        printer.setTextSize(4,4)
+        printer.setTextNormal();
+        printer.println("--------------------------------");
+        printer.setTextSize(2, 2);
         printer.println("ASPORTO");
       }
       printer.setTextNormal();
       printer.println("--------------------------------");
       printer.alignLeft();
-      printer.setTextSize(5,5)
+      printer.setTextSize(3, 2);
       printer.println(`1x ${item.name}`);
+      printer.setTextNormal();
       printer.println("--------------------------------");
       printer.newLine();
       printer.cut();
@@ -101,10 +103,12 @@ export async function printOrderTicket(
   // 4. Print grouped tickets
   Object.values(groups).forEach((group) => {
     printer.alignCenter();
-    printer.setTextSize(6,6)
+    printer.setTextSize(4, 4);
     printer.println(group.type.toUpperCase());
     if (group.isTakeout) {
-      printer.setTextSize(4,4)
+      printer.setTextNormal();
+      printer.println("--------------------------------");
+      printer.setTextSize(2, 2);
       printer.println("ASPORTO");
     }
     printer.setTextNormal();
@@ -112,10 +116,10 @@ export async function printOrderTicket(
 
     group.items.forEach((item) => {
       printer.alignLeft();
-      printer.setTextSize(5,5)
+      printer.setTextSize(3, 2);
       printer.println(`${item.quantity}x ${item.name}`);
     });
-
+    printer.setTextNormal();
     printer.println("--------------------------------");
     printer.newLine();
     printer.cut();
