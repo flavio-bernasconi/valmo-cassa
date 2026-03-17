@@ -79,6 +79,7 @@ export default function DashboardPage() {
       foodStats={foodStats}
       takeoutStats={takeoutStats}
       recentOrders={recentOrders}
+      totalOrdersCount={orders.length}
     />
   );
 }

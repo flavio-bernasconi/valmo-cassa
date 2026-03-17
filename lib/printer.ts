@@ -38,7 +38,7 @@ export async function printOrderTicket(
   }
 
   printer.alignCenter();
-  printer.setTextSize(6, 4);
+  printer.setTextNormal();
   printer.println("ValmoFestival Tridi");
   printer.newLine();
 
@@ -59,18 +59,19 @@ export async function printOrderTicket(
     const effectiveIsTakeout = isAllOrderTakeout || item.isTakeout;
     for (let i = 0; i < item.quantity; i++) {
       printer.alignCenter();
-      printer.setTextSize(3, 3);
+      printer.setTextSize(2, 2);
       printer.println(item.type.toUpperCase());
       if (effectiveIsTakeout) {
         printer.setTextNormal();
         printer.println("--------------------------------");
-        printer.setTextSize(2, 2);
+        printer.setTextSize(2, 1);
         printer.println("ASPORTO");
       }
       printer.setTextNormal();
       printer.println("--------------------------------");
+      printer.newLine();
       printer.alignLeft();
-      printer.setTextSize(3, 2);
+      printer.setTextSize(1, 1);
       printer.println(`1x ${item.name}`);
       printer.setTextNormal();
       printer.println("--------------------------------");
@@ -103,20 +104,20 @@ export async function printOrderTicket(
   // 4. Print grouped tickets
   Object.values(groups).forEach((group) => {
     printer.alignCenter();
-    printer.setTextSize(4, 4);
+    printer.setTextSize(2, 2);
     printer.println(group.type.toUpperCase());
     if (group.isTakeout) {
       printer.setTextNormal();
       printer.println("--------------------------------");
-      printer.setTextSize(2, 2);
+      printer.setTextSize(2, 1);
       printer.println("ASPORTO");
     }
     printer.setTextNormal();
     printer.println("--------------------------------");
-
+    printer.newLine();
     group.items.forEach((item) => {
       printer.alignLeft();
-      printer.setTextSize(3, 2);
+      printer.setTextSize(1, 1);
       printer.println(`${item.quantity}x ${item.name}`);
     });
     printer.setTextNormal();

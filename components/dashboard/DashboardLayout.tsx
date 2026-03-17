@@ -42,6 +42,7 @@ interface DashboardLayoutProps {
   foodStats: { qty: number; rev: number };
   takeoutStats: { percentage: number; qty: number };
   recentOrders: RecentOrder[];
+  totalOrdersCount: number;
   headerActions?: ReactNode;
   hasDateFilter?: boolean;
 }
@@ -60,6 +61,7 @@ export function DashboardLayout({
   foodStats,
   takeoutStats,
   recentOrders,
+  totalOrdersCount,
   headerActions,
   hasDateFilter = true,
 }: DashboardLayoutProps) {
@@ -70,8 +72,13 @@ export function DashboardLayout({
       <div className="flex-1 w-full flex flex-col gap-8 p-8">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center gap-4 flex-wrap">
-            <div>
-              <h1 className="text-3xl font-bold">{title}</h1>
+            <div className="w-full">
+              <div className="flex items-center justify-between w-full gap-3">
+                <h1 className="text-3xl font-bold">{title}</h1>
+                <Badge className="text-xs py-1 px-3">
+                  Totale ordini a db: {totalOrdersCount}
+                </Badge>
+              </div>
               <p className="text-muted-foreground">{subtitle}</p>
             </div>
           </div>

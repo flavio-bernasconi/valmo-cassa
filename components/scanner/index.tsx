@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { CartItem } from "../order-interface";
 import { MenuItem } from "@/lib/types";
@@ -10,10 +10,10 @@ import { toast } from "sonner";
 
 export const ScannerComponent = ({
   menu,
-  setCart,
+  setFullOrder,
 }: {
   menu: MenuItem[];
-  setCart: Dispatch<SetStateAction<CartItem[]>>;
+  setFullOrder: (cart: CartItem[]) => void;
 }) => {
   const [pause, setPause] = useState(false);
 
@@ -52,7 +52,7 @@ export const ScannerComponent = ({
         });
       }
 
-      setCart(decodedCart);
+      setFullOrder(decodedCart);
       toast.success("Carrello caricato dal QR code!");
     } catch (error) {
       console.error("Errore durante la scansione:", error);

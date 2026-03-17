@@ -17,6 +17,7 @@ import { Change } from "./order/Change";
 import QRCode from "react-qr-code";
 import { CartQRCodec } from "@/lib/qr-codec";
 import { ScannerComponent } from "./scanner";
+import WebcamPermission from "./CameraPermissions";
 
 export type CartItem = {
   item: MenuItem;
@@ -33,6 +34,10 @@ function OrderActionsBar({
   itemOptions,
   setItemOptions,
   setCart,
+  printAllTicketsSeparate,
+  setPrintAllTicketsSeparate,
+  isAllOrderTakeout,
+  setIsAllOrderTakeout,
 }: {
   cart: CartItem[];
   totalPrice: number;
@@ -49,31 +54,16 @@ function OrderActionsBar({
     >
   >;
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  printAllTicketsSeparate: boolean;
+  setPrintAllTicketsSeparate: (val: boolean) => void;
+  isAllOrderTakeout: boolean;
+  setIsAllOrderTakeout: (val: boolean) => void;
 }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [printAllTicketsSeparate, setPrintAllTicketsSeparate] = useState(false);
-  const [isAllOrderTakeout, setIsAllOrderTakeout] = useState(false);
   const [showPrintConfirm, setShowPrintConfirm] = useState(false);
   const [showSaveOnlyConfirm, setShowSaveOnlyConfirm] = useState(false);
-
-  useEffect(() => {
-    const checkAreAllTakeout =
-      cart.length > 0 &&
-      Object.keys(itemOptions || {}).length === cart.length &&
-      Object.values(itemOptions || {}).every((item) => item.isTakeout);
-
-    const checkAreAllPrintSeparateTickets =
-      cart.length > 0 &&
-      Object.keys(itemOptions || {}).length === cart.length &&
-      Object.values(itemOptions || {}).every(
-        (item) => item.printSeparateTickets,
-      );
-
-    setIsAllOrderTakeout(checkAreAllTakeout);
-    setPrintAllTicketsSeparate(checkAreAllPrintSeparateTickets);
-  }, [itemOptions, cart.length]);
 
   const getPrintPayload = () =>
     cart.map((i) => ({
@@ -344,6 +334,21 @@ export function OrderInterface() {
     | { [key: string]: { isTakeout: boolean; printSeparateTickets: boolean } }
     | undefined
   >();
+  const [printAllTicketsSeparate, setPrintAllTicketsSeparate] = useState(false);
+  const [isAllOrderTakeout, setIsAllOrderTakeout] = useState(false);
+
+  useEffect(() => {
+    const checkAreAllTakeout =
+      cart.length > 0 &&
+      cart.every((item) => itemOptions?.[item.item.id!]?.isTakeout);
+
+    const checkAreAllPrintSeparateTickets =
+      cart.length > 0 &&
+      cart.every((item) => itemOptions?.[item.item.id!]?.printSeparateTickets);
+
+    setIsAllOrderTakeout(checkAreAllTakeout);
+    setPrintAllTicketsSeparate(checkAreAllPrintSeparateTickets);
+  }, [itemOptions, cart]);
 
   const addToCart = (item: MenuItem) => {
     setCart((prev) => {
@@ -354,6 +359,18 @@ export function OrderInterface() {
         );
       }
       return [...prev, { item, quantity: 1 }];
+    });
+
+    // Initialize options for new item if it doesn't exist
+    setItemOptions((prev) => {
+      if (prev?.[item.id!]) return prev;
+      return {
+        ...(prev || {}),
+        [item.id!]: {
+          isTakeout: isAllOrderTakeout,
+          printSeparateTickets: printAllTicketsSeparate,
+        },
+      };
     });
   };
 
@@ -378,6 +395,20 @@ export function OrderInterface() {
     });
   };
 
+  const setFullOrder = (newCart: CartItem[]) => {
+    setCart(newCart);
+    const newOptions: {
+      [key: string]: { isTakeout: boolean; printSeparateTickets: boolean };
+    } = {};
+    newCart.forEach((item) => {
+      newOptions[item.item.id!] = {
+        isTakeout: isAllOrderTakeout,
+        printSeparateTickets: printAllTicketsSeparate,
+      };
+    });
+    setItemOptions(newOptions);
+  };
+
   const totalPrice = cart.reduce(
     (acc, val) => acc + val.item.price * val.quantity,
     0,
@@ -399,6 +430,10 @@ export function OrderInterface() {
         itemOptions={itemOptions}
         setItemOptions={setItemOptions}
         setCart={setCart}
+        isAllOrderTakeout={isAllOrderTakeout}
+        setIsAllOrderTakeout={setIsAllOrderTakeout}
+        printAllTicketsSeparate={printAllTicketsSeparate}
+        setPrintAllTicketsSeparate={setPrintAllTicketsSeparate}
       />
       <Cart
         cart={cart}
@@ -409,7 +444,8 @@ export function OrderInterface() {
         setItemOptions={setItemOptions}
       ></Cart>
       <div className="w-full flex flex-col gap-4 max-w-xs rounded-md overflow-hidden border border-slate-200">
-        <ScannerComponent menu={menu} setCart={setCart} />
+        <WebcamPermission />
+        <ScannerComponent menu={menu} setFullOrder={setFullOrder} />
         <div
           style={{
             height: "auto",
