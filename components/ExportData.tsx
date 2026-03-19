@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { db } from "@/lib/db";
 import { toast } from "sonner";
+import { useLiveQuery } from "dexie-react-hooks";
 
 interface ExportDataProps {
   variant?: "outline" | "default" | "ghost" | "secondary";
@@ -18,7 +20,9 @@ export function ExportData({
   className = "",
   label = "Esporta ordini",
 }: ExportDataProps) {
-  const downloadData = async () => {
+  const currentCount = useLiveQuery(() => db.orders.count());
+
+  const downloadData = async (isAuto = false) => {
     try {
       const allOrderItems = await db.order_items.toArray();
       const allOrders = await db.orders.toArray();
@@ -57,18 +61,37 @@ export function ExportData({
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast.success("Dati esportati con successo!");
+      if (isAuto) {
+        toast.info("Backup automatico eseguito!", {
+          description: `Raggiunti ${Math.floor(allOrders.length / 100) * 100} ordini.`,
+        });
+      } else {
+        toast.success("Dati esportati con successo!");
+      }
     } catch (error) {
       console.error("Errore durante l'esportazione:", error);
       toast.error("Errore durante l'esportazione dei dati.");
     }
   };
 
+  useEffect(() => {
+    if (currentCount === undefined || currentCount === 0) return;
+
+    const threshold = Math.floor(currentCount / 100) * 100;
+    if (threshold === 0) return;
+
+    const lastTriggered = localStorage.getItem("last_auto_export_threshold");
+    if (!lastTriggered || parseInt(lastTriggered, 10) < threshold) {
+      downloadData(true);
+      localStorage.setItem("last_auto_export_threshold", String(threshold));
+    }
+  }, [currentCount]);
+
   return (
     <Button
       variant={variant}
       size={size}
-      onClick={downloadData}
+      onClick={() => downloadData()}
       className={`gap-2 ${className}`}
     >
       <Download className="w-4 h-4" /> {label}
