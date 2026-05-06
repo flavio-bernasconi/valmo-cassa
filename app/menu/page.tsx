@@ -21,6 +21,7 @@ export default function MenuManagement() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItem, setNewItem] = useState({
+    id: "",
     name: "",
     price: "",
     type: "bar" as MenuItemTypes,
@@ -33,7 +34,7 @@ export default function MenuManagement() {
   const loadMenuItems = async () => {
     try {
       const items = await db.menu_items.toArray();
-      setMenuItems(items.sort((a, b) => parseInt(a.id || '0') - parseInt(b.id || '0')));
+      setMenuItems(items.sort((a, b) => a.id.localeCompare(b.id)));
     } catch (error) {
       console.error("Error loading menu items:", error);
     } finally {
@@ -43,19 +44,21 @@ export default function MenuManagement() {
 
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newItem.name || !newItem.price) return;
+    if (!newItem.id || !newItem.name || !newItem.price) return;
 
     try {
       await addMenuItem({
+        id: newItem.id,
         name: newItem.name,
         price: parseFloat(newItem.price),
         type: newItem.type,
       });
-      setNewItem({ name: "", price: "", type: "bar" });
+      setNewItem({ id: "", name: "", price: "", type: "bar" });
       setShowAddForm(false);
       loadMenuItems();
     } catch (error) {
       console.error("Error adding menu item:", error);
+      alert(error instanceof Error ? error.message : "Error adding menu item");
     }
   };
 
@@ -112,6 +115,23 @@ export default function MenuManagement() {
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4">Add Menu Item</h2>
             <form onSubmit={handleAddItem} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  ID
+                </label>
+                <input
+                  type="text"
+                  value={newItem.id}
+                  onChange={(e) =>
+                    setNewItem({
+                      ...newItem,
+                      id: e.target.value.toUpperCase().replace(/\s+/g, ""),
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
+                  required
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Name

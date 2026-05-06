@@ -10,7 +10,7 @@ export class MyDatabase extends Dexie {
   constructor() {
     super("ValmoCassaDB");
     this.version(1).stores({
-      menu_items: "++id, name, type",
+      menu_items: "id, name, type",
       orders: "id, created_at",
       order_items: "++id, order_id, [order_id+menu_item_id], menu_item_id",
     });
@@ -35,37 +35,29 @@ export async function seedDatabase() {
   );
 }
 
-export async function generateUniqueId(): Promise<string> {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed easily confused chars like 0, 1, I, O
-  let isUnique = false;
-  let newId = "";
-
-  while (!isUnique) {
-    newId = "";
-    for (let i = 0; i < 4; i++) {
-      newId += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    const existing = await db.menu_items.get(newId);
-    if (!existing) isUnique = true;
-  }
-
-  return newId;
-}
-
 export async function addMenuItem(item: {
+  id: string;
   name: string;
   price: number;
   type: MenuItemTypes;
 }): Promise<string> {
-  const nextId = await generateUniqueId();
+  const normalizedId = item.id.trim().toUpperCase();
+  if (!normalizedId) {
+    throw new Error("ID is required");
+  }
+  const existing = await db.menu_items.get(normalizedId);
+  if (existing) {
+    throw new Error(`Menu item with id "${normalizedId}" already exists`);
+  }
+
   const now = new Date().toISOString();
   await db.menu_items.add({
-    id: nextId,
     ...item,
+    id: normalizedId,
     created_at: now,
     visible: true,
   } as MenuItem);
-  return nextId;
+  return normalizedId;
 }
 
 export async function deleteMenuItem(id: string): Promise<void> {

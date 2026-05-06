@@ -14,14 +14,11 @@ import { db, deleteOrder, seedDatabase } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { Change } from "./order/Change";
-import QRCode from "react-qr-code";
-import { CartQRCodec } from "@/lib/qr-codec";
-import { ScannerComponent } from "./scanner";
-import WebcamPermission from "./CameraPermissions";
 
 export type CartItem = {
   item: MenuItem;
   quantity: number;
+  note: string;
 };
 
 type ItemOptionsMap =
@@ -74,6 +71,7 @@ function OrderActionsBar({
       isTakeout: itemOptions?.[i.item.id!]?.isTakeout || false,
       printSeparateTickets:
         itemOptions?.[i.item.id!]?.printSeparateTickets || false,
+      note: i.note?.trim() || undefined,
     }));
 
   const handlePrintOnly = async () => {
@@ -303,7 +301,7 @@ function OrderActionsBar({
           </div>
         </div>
         <div className="flex gap-4">
-          <Change totalPrice={totalPrice.toFixed(2)} />
+          <Change totalPrice={totalPrice.toFixed(2)} cart={cart} />
           {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
           <div className="flex flex-col gap-2 items-start">
             <Button
@@ -358,7 +356,7 @@ export function OrderInterface() {
           i.item.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
         );
       }
-      return [...prev, { item, quantity: 1 }];
+      return [...prev, { item, quantity: 1, note: "" }];
     });
 
     // Initialize options for new item if it doesn't exist
@@ -395,18 +393,10 @@ export function OrderInterface() {
     });
   };
 
-  const setFullOrder = (newCart: CartItem[]) => {
-    setCart(newCart);
-    const newOptions: {
-      [key: string]: { isTakeout: boolean; printSeparateTickets: boolean };
-    } = {};
-    newCart.forEach((item) => {
-      newOptions[item.item.id!] = {
-        isTakeout: isAllOrderTakeout,
-        printSeparateTickets: printAllTicketsSeparate,
-      };
-    });
-    setItemOptions(newOptions);
+  const updateNote = (itemId: string, note: string) => {
+    setCart((prev) =>
+      prev.map((i) => (i.item.id === itemId ? { ...i, note } : i)),
+    );
   };
 
   const totalPrice = cart.reduce(
@@ -440,28 +430,10 @@ export function OrderInterface() {
         removeFromCart={removeFromCart}
         addToCart={addToCart}
         updateQuantity={updateQuantity}
+        updateNote={updateNote}
         itemOptions={itemOptions}
         setItemOptions={setItemOptions}
       ></Cart>
-      <div className="w-full flex flex-col gap-4 max-w-xs rounded-md overflow-hidden border border-slate-200">
-        <WebcamPermission />
-        <ScannerComponent menu={menu} setFullOrder={setFullOrder} />
-        <div
-          style={{
-            height: "auto",
-            margin: "0 auto",
-            maxWidth: 300,
-            width: "100%",
-          }}
-        >
-          <QRCode
-            size={256}
-            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={cart.length > 0 ? CartQRCodec.encode(cart) : ""}
-            viewBox={`0 0 256 256`}
-          />
-        </div>
-      </div>
     </div>
   );
 }

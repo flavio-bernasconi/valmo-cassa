@@ -20,6 +20,7 @@ export const Cart = ({
   removeFromCart,
   addToCart,
   updateQuantity,
+  updateNote,
   children,
   itemOptions,
   setItemOptions,
@@ -28,6 +29,7 @@ export const Cart = ({
   removeFromCart: (id: string) => void;
   addToCart: (item: MenuItem) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateNote: (id: string, note: string) => void;
   children?: React.ReactNode;
   itemOptions?: {
     [key: string]: { isTakeout: boolean; printSeparateTickets: boolean };
@@ -80,7 +82,7 @@ export const Cart = ({
                   className="flex flex-col rounded-lg border border-slate-200 overflow-hidden min-w-0"
                 >
                   <div
-                    className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium uppercase tracking-tight text-slate-600 shrink-0"
+                    className="flex items-center gap-2 px-2 py-1.5 text-xs font-bold uppercase tracking-tight text-slate-600 shrink-0"
                     style={{
                       background: MAPPED_TYPES[type].color,
                       borderBottom: "1px solid var(--border, #e2e8f0)",
@@ -139,26 +141,37 @@ export const Cart = ({
                               {(i.quantity * i.item.price).toFixed(2)}€
                             </span>
                           </div>
-                          <OptionCartItem
-                            itemOptions={itemOptions?.[i.item.id!]}
-                            setItemOptions={(value) => {
-                              setItemOptions?.((prev) => {
-                                const next =
-                                  typeof value === "function"
-                                    ? value(prev?.[i.item.id!])
-                                    : value;
-                                if (!next) {
-                                  if (!prev) return undefined;
-                                  const nextOptions = { ...prev };
-                                  delete nextOptions[i.item.id!];
-                                  return Object.keys(nextOptions).length > 0
-                                    ? nextOptions
-                                    : undefined;
-                                }
-                                return { ...prev, [i.item.id!]: next };
-                              });
-                            }}
-                          />
+                          <div className="flex items-center gap-2">
+                            <OptionCartItem
+                              itemOptions={itemOptions?.[i.item.id!]}
+                              setItemOptions={(value) => {
+                                setItemOptions?.((prev) => {
+                                  const next =
+                                    typeof value === "function"
+                                      ? value(prev?.[i.item.id!])
+                                      : value;
+                                  if (!next) {
+                                    if (!prev) return undefined;
+                                    const nextOptions = { ...prev };
+                                    delete nextOptions[i.item.id!];
+                                    return Object.keys(nextOptions).length > 0
+                                      ? nextOptions
+                                      : undefined;
+                                  }
+                                  return { ...prev, [i.item.id!]: next };
+                                });
+                              }}
+                            />
+                            <Input
+                              type="text"
+                              placeholder="Note"
+                              value={i.note}
+                              onChange={(e) =>
+                                updateNote(i.item.id!, e.target.value)
+                              }
+                              className="w-32 text-xs h-6"
+                            />
+                          </div>
                         </div>
                       ))
                     )}

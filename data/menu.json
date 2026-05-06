@@ -1,242 +1,188 @@
 [
   {
-    "id": "A1B2",
+    "id": "5",
     "name": "Acqua",
     "price": 0.5,
     "type": "bar"
   },
   {
-    "id": "C3D4",
+    "id": "10",
     "name": "Bibita",
-    "price": 2,
+    "price": 3,
     "type": "bar"
   },
   {
-    "id": "E5F6",
-    "name": "Caffè",
-    "price": 1,
+    "id": "15",
+    "name": "Vino 1 litro",
+    "price": 9,
     "type": "bar"
   },
   {
-    "id": "G7H8",
-    "name": "Vino 1 litro sfuso",
-    "price": 7,
-    "type": "bar"
-  },
-  {
-    "id": "I9J0",
+    "id": "20",
     "name": "Vino bicchiere",
-    "price": 1,
+    "price": 1.5,
     "type": "bar"
   },
   {
-    "id": "K1L2",
-    "name": "Bottiglia vino rosso Scariot",
-    "price": 12,
-    "type": "bar"
-  },
-  {
-    "id": "M3N4",
+    "id": "25",
     "name": "Bottiglia vino",
-    "price": 10,
+    "price": 15,
     "type": "bar"
   },
   {
-    "id": "P5Q6",
+    "id": "30",
     "name": "Birra artigianale",
-    "price": 3.5,
-    "type": "bar"
-  },
-  {
-    "id": "R7S8",
-    "name": "Birra Moretti",
-    "price": 2.5,
-    "type": "bar"
-  },
-  {
-    "id": "T9U0",
-    "name": "Birra Ichnusa",
-    "price": 3,
-    "type": "bar"
-  },
-  {
-    "id": "V1W2",
-    "name": "Birra artigianale premium",
-    "price": 10,
-    "type": "bar"
-  },
-  {
-    "id": "X3Y4",
-    "name": "Birra Moretti grande",
-    "price": 8,
-    "type": "bar"
-  },
-  {
-    "id": "Z5A6",
-    "name": "Birra Ichnusa grande",
-    "price": 9,
-    "type": "bar"
-  },
-  {
-    "id": "B7C8",
-    "name": "Gnocchi ragu",
-    "price": 4.5,
-    "type": "primi"
-  },
-  {
-    "id": "D9E0",
-    "name": "Gnocchi boscaiola",
     "price": 5,
-    "type": "primi"
+    "type": "bar"
   },
   {
-    "id": "F1G2",
-    "name": "Gnocchi burro e salvia",
+    "id": "35",
+    "name": "Litro artigianale",
+    "price": 21,
+    "type": "bar"
+  },
+  {
+    "id": "40",
+    "name": "Birra chiara",
     "price": 4,
-    "type": "primi"
+    "type": "bar"
   },
   {
-    "id": "H3I4",
-    "name": "Gnocchi pomodoro",
-    "price": 4,
-    "type": "primi"
+    "id": "45",
+    "name": "Litro chiara",
+    "price": 17,
+    "type": "bar"
   },
   {
-    "id": "J5K6",
-    "name": "Gnocchi zola salsiccia",
-    "price": 5,
-    "type": "primi"
-  },
-  {
-    "id": "L7M8",
-    "name": "Trippa",
-    "price": 4.5,
-    "type": "primi"
-  },
-  {
-    "id": "N9P0",
-    "name": "Coda alla vaccinara",
-    "price": 8,
-    "type": "primi"
-  },
-  {
-    "id": "Q1R2",
-    "name": "Gorgonzola",
-    "price": 2,
-    "type": "primi"
-  },
-  {
-    "id": "S3T4",
-    "name": "Zuppa cipolle",
-    "price": 4.5,
-    "type": "primi"
-  },
-  {
-    "id": "U5V6",
-    "name": "Dolci",
-    "price": 2,
-    "type": "dolci"
-  },
-  {
-    "id": "W7X8",
-    "name": "Grigliata mista",
-    "price": 9,
-    "type": "secondi"
-  },
-  {
-    "id": "Y9Z0",
-    "name": "Costine",
+    "id": "70",
+    "name": "Pomodoro",
     "price": 6,
+    "type": "primi"
+  },
+  {
+    "id": "75",
+    "name": "Burro e salvia",
+    "price": 6,
+    "type": "primi"
+  },
+  {
+    "id": "80",
+    "name": "Ragù di carne",
+    "price": 8,
+    "type": "primi"
+  },
+  {
+    "id": "85",
+    "name": "Gorgonzola, radicchio e noci",
+    "price": 8,
+    "type": "primi"
+  },
+  {
+    "id": "90",
+    "name": "Taleggio, barbabietola e noci",
+    "price": 7,
+    "type": "primi"
+  },
+  {
+    "id": "95",
+    "name": "Zuppa di cipolle",
+    "price": 7,
+    "type": "primi"
+  },
+  {
+    "id": "100",
+    "name": "Frisella hummus",
+    "price": 6,
+    "type": "primi"
+  },
+  {
+    "id": "105",
+    "name": "SILURO",
+    "price": 12,
+    "type": "primi"
+  },
+  {
+    "id": "110",
+    "name": "Fanta insalata",
+    "price": 5,
+    "type": "contorni"
+  },
+  {
+    "id": "115",
+    "name": "Insalata cavolo",
+    "price": 4,
+    "type": "contorni"
+  },
+  {
+    "id": "120",
+    "name": "Fagioli e cipolle",
+    "price": 3.5,
+    "type": "contorni"
+  },
+  {
+    "id": "125",
+    "name": "Patatine",
+    "price": 3.5,
+    "type": "contorni"
+  },
+  {
+    "id": "130",
+    "name": "Falafel",
+    "price": 5,
+    "type": "contorni"
+  },
+  {
+    "id": "135",
+    "name": "Falafel + contorno",
+    "price": 7.5,
+    "type": "contorni"
+  },
+  {
+    "id": "140",
+    "name": "Grigliata mista",
+    "price": 15,
     "type": "secondi"
   },
   {
-    "id": "A1C3",
-    "name": "Tomino",
-    "price": 3,
-    "type": "contorni"
+    "id": "145",
+    "name": "Polli marinati",
+    "price": 7.5,
+    "type": "secondi"
   },
   {
-    "id": "B2D4",
-    "name": "Tomino + verdure grigliate",
-    "price": 4.5,
-    "type": "contorni"
+    "id": "150",
+    "name": "Costine",
+    "price": 9.5,
+    "type": "secondi"
   },
   {
-    "id": "E5G7",
+    "id": "155",
     "name": "Salamella",
-    "price": 3,
-    "type": "secondi"
-  },
-  {
-    "id": "F6H8",
-    "name": "Salamella + verdura",
     "price": 4,
     "type": "secondi"
   },
   {
-    "id": "I9K1",
-    "name": "Salamella tomino + verdura",
+    "id": "160",
+    "name": "Tomino",
+    "price": 4,
+    "type": "secondi"
+  },
+  {
+    "id": "165",
+    "name": "Tomino + contorno",
     "price": 6.5,
     "type": "secondi"
   },
   {
-    "id": "J0L2",
-    "name": "Salamella tomino",
-    "price": 6,
-    "type": "secondi"
-  },
-  {
-    "id": "M3P5",
-    "name": "Panino tomino + verdura",
+    "id": "170",
+    "name": "Crepes",
     "price": 4.5,
-    "type": "secondi"
+    "type": "dolci"
   },
   {
-    "id": "N4Q6",
-    "name": "Peperoni grigliati",
-    "price": 0,
-    "type": "contorni"
-  },
-  {
-    "id": "R7T9",
-    "name": "Cipolle grigliate",
-    "price": 0,
-    "type": "contorni"
-  },
-  {
-    "id": "S8U0",
-    "name": "Sovracosce di pollo",
-    "price": 5,
-    "type": "secondi"
-  },
-  {
-    "id": "V1X3",
-    "name": "Roast beef",
-    "price": 4.5,
-    "type": "secondi"
-  },
-  {
-    "id": "W2Y4",
-    "name": "Patate fritte",
-    "price": 3,
-    "type": "contorni"
-  },
-  {
-    "id": "A3Z5",
-    "name": "Fagioli",
-    "price": 2,
-    "type": "contorni"
-  },
-  {
-    "id": "B4B6",
-    "name": "Fagioli con cipolle",
-    "price": 2,
-    "type": "contorni"
-  },
-  {
-    "id": "C5C7",
-    "name": "Fanta Insalata",
+    "id": "175",
+    "name": "Salame di cioccolato",
     "price": 4,
-    "type": "contorni"
+    "type": "dolci"
   }
 ]

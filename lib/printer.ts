@@ -12,6 +12,7 @@ export type PrintItem = {
   type: MenuItemTypes;
   isTakeout: boolean;
   printSeparateTickets: boolean;
+  note?: string;
 };
 
 export async function printOrderTicket(
@@ -73,6 +74,9 @@ export async function printOrderTicket(
       printer.alignLeft();
       printer.setTextSize(1, 1);
       printer.println(`1x ${item.name}`);
+      if (item.note) {
+        printer.println(`Nota: ${item.note}`);
+      }
       printer.setTextNormal();
       printer.println("--------------------------------");
       printer.newLine();
@@ -119,6 +123,9 @@ export async function printOrderTicket(
       printer.alignLeft();
       printer.setTextSize(1, 1);
       printer.println(`${item.quantity}x ${item.name}`);
+      if (item.note) {
+        printer.println(`Nota: ${item.note}`);
+      }
     });
     printer.setTextNormal();
     printer.println("--------------------------------");
